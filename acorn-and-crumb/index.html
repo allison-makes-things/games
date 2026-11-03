@@ -28,6 +28,10 @@ header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:s
 h1,h2{font-family:'Press Start 2P',ui-monospace,monospace;margin:0;font-weight:400}
 h1{font-size:clamp(14px,3.2vw,22px);line-height:1.4}
 h2{font-size:14px;margin-bottom:12px}
+.collapse{display:flex;width:100%;align-items:center;justify-content:space-between;gap:10px;background:none;border:none;padding:0;color:inherit;font:inherit;cursor:pointer;text-align:left}
+.collapse h2{margin:0}
+.collapse #shopArrow{font-family:'Press Start 2P',monospace;font-size:12px}
+.collapse:focus-visible{outline:3px dashed var(--accent);outline-offset:4px}
 h3.sub{font-family:'Press Start 2P',monospace;font-weight:400;font-size:11px;margin:16px 0 10px}
 .panel{background:var(--panel);border:4px solid var(--ink);box-shadow:0 4px 0 var(--ink),inset 0 0 0 3px var(--panel2);padding:16px}
 .btn{font:inherit;font-size:20px;color:#fff;background:var(--accent);border:3px solid var(--ink);box-shadow:0 4px 0 var(--ink);padding:6px 14px;cursor:pointer;text-shadow:1px 1px 0 rgba(0,0,0,.3)}
@@ -207,11 +211,13 @@ ul#taskList{list-style:none;margin:0;padding:0;display:flex;flex-direction:colum
     </section>
 
     <section class="shop panel" aria-label="Café upgrades">
-      <h2>Café upgrades</h2>
-      <p id="walletTxt" style="margin:0 0 12px"></p>
-      <div id="shopList"></div>
-      <h3 class="sub">Menu additions</h3>
-      <div id="menuShop"></div>
+      <button type="button" class="collapse" id="shopToggle" aria-controls="shopBody"><h2>Café upgrades</h2><span id="shopArrow" aria-hidden="true"></span></button>
+      <div id="shopBody">
+        <p id="walletTxt" style="margin:12px 0"></p>
+        <div id="shopList"></div>
+        <h3 class="sub">Menu additions</h3>
+        <div id="menuShop"></div>
+      </div>
     </section>
 
     <section class="regulars panel" aria-label="Regulars">
@@ -377,7 +383,7 @@ const UPGRADES = [
 ];
 
 /* ---------- state ---------- */
-function fresh(){return {tasks:[],completed:0,basket:[],orders:[],served:0,unlocked:1,hearts:{},tried:{},wallet:0,upgrades:[],dishUnlocks:[],gifts:[],rareMet:[],streak:{count:0,last:null},queue:[],muted:false,music:false,volume:70,seasonMode:'auto',timeMode:'auto',filter:'all',customer:null,nextId:1};}
+function fresh(){return {tasks:[],completed:0,basket:[],orders:[],served:0,unlocked:1,hearts:{},tried:{},wallet:0,upgrades:[],dishUnlocks:[],gifts:[],rareMet:[],streak:{count:0,last:null},queue:[],muted:false,music:false,volume:70,seasonMode:'auto',timeMode:'auto',filter:'all',shopOpen:true,customer:null,nextId:1};}
 function migrate(s){
   const o=Object.assign(fresh(),s);
   if(s.wallet===undefined)o.wallet=Object.values(o.hearts||{}).reduce((a,b)=>a+b,0);
@@ -1025,6 +1031,11 @@ function startDrag(e,li,grip){
   };
   grip.addEventListener('pointermove',move);grip.addEventListener('pointerup',up);grip.addEventListener('pointercancel',up);
 }
+function renderShopOpen(){
+  const open=state.shopOpen!==false;
+  $('#shopBody').hidden=!open;$('#shopArrow').textContent=open?'▼':'▶';
+  $('#shopToggle').setAttribute('aria-expanded',open);
+}
 function renderSound(){
   $('#soundBtn').textContent='Sound: '+(state.muted?'Off':'On');
   $('#musicBtn').textContent='Music: '+(state.music?'On':'Off');
@@ -1051,6 +1062,7 @@ $('#addForm').onsubmit=e=>{
   $('#taskInput').value='';$('#taskBig').checked=false;sfx('add');save();renderAll();
 };
 $('#clearBtn').onclick=()=>{state.tasks=state.tasks.filter(t=>!t.done||t.repeat);save();renderAll();};
+$('#shopToggle').onclick=()=>{state.shopOpen=state.shopOpen===false;save();renderShopOpen();};
 $('#soundBtn').onclick=()=>{state.muted=!state.muted;save();renderSound();musicSync();sfx('check');};
 $('#musicBtn').onclick=()=>{state.music=!state.music;save();renderSound();musicSync();if(state.music)sfx('check');};
 $('#volume').oninput=e=>{state.volume=+e.target.value;if(master)master.gain.value=state.volume/100;};
@@ -1093,7 +1105,7 @@ setInterval(refreshRecurring,60000);
 /* ---------- boot ---------- */
 if(!state.customer)newCustomer(0);
 setIcons();refreshRecurring();
-applySeason();renderSound();renderTabs();musicSync();
+applySeason();renderSound();renderTabs();renderShopOpen();musicSync();
 renderAll();
 if(state.queue.length){setPhase('gap');nextModal();}else setPhase('in');
 requestAnimationFrame(frame);
