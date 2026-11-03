@@ -1048,11 +1048,14 @@ function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show'
 /* ---------- app icon (drawn from pixels, used for tab + home screen) ---------- */
 function setIcons(){
   const rows=['............','....kkkk....','..kkBBBBkk..','.kBBbBBBBBk.','.kBBBBBbBBk.','.kkkkkkkkkk.','..kbbbbbbk..','..kbbwbbbk..','..kbbwbbbk..','...kbbbbk...','....kbbk....','.....kk.....'];
-  const c=document.createElement('canvas');c.width=c.height=180;const x=c.getContext('2d');
-  x.fillStyle='#fff3de';x.fillRect(0,0,180,180);
-  rows.forEach((r,j)=>[...r].forEach((ch,i)=>{if(ch!=='.'){x.fillStyle=DISH_PAL[ch];x.fillRect(18+i*12,18+j*12,12,12);}}));
-  const url=c.toDataURL('image/png');
-  $('#touchIcon').href=url;$('#favicon').href=url;
+  const draw=(size,bg)=>{
+    const c=document.createElement('canvas');c.width=c.height=size;const x=c.getContext('2d'),u=size/15;
+    if(bg){x.fillStyle=bg;x.fillRect(0,0,size,size);}
+    rows.forEach((r,j)=>[...r].forEach((ch,i)=>{if(ch!=='.'){x.fillStyle=DISH_PAL[ch];x.fillRect(Math.round((1.5+i)*u),Math.round((1.5+j)*u),Math.ceil(u),Math.ceil(u));}}));
+    return c.toDataURL('image/png');
+  };
+  $('#favicon').href=draw(64);                 // tab icon: transparent, just the acorn
+  $('#touchIcon').href=draw(180,'#e9c89b');    // home-screen icon needs a solid background
 }
 
 /* ---------- wiring ---------- */
