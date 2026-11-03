@@ -82,7 +82,7 @@ canvas#scene{width:100%;height:auto;image-rendering:pixelated;display:block}
 .dish:active:not([disabled]){transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 .dish:focus-visible{outline:3px dashed var(--accent);outline-offset:3px}
 .dish[disabled]{opacity:.5;cursor:not-allowed}
-.legend{display:flex;gap:12px;flex-wrap:wrap;margin:10px 0 0;font-size:18px;opacity:.85}
+.legend{display:flex;gap:6px 14px;flex-wrap:wrap;margin:14px 0 0;padding-top:12px;border-top:3px dashed var(--panel2);font-size:18px;opacity:.9}
 .legend i{display:inline-block;width:10px;height:10px;border:2px solid var(--ink);margin-right:4px}
 /* tasks */
 form#addForm{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
@@ -185,7 +185,6 @@ ul#taskList{list-style:none;margin:0;padding:0;display:flex;flex-direction:colum
       </div>
       <div id="menuHint" style="margin:14px 0 8px"></div>
       <div class="menu" id="menu"></div>
-      <div class="legend" id="legend"></div>
       <div class="stats" id="stats"></div>
     </section>
 
@@ -208,6 +207,7 @@ ul#taskList{list-style:none;margin:0;padding:0;display:flex;flex-direction:colum
         <span id="leftTxt"></span>
         <button class="btn ghost small" id="clearBtn">Clear done</button>
       </div>
+      <div class="legend" id="legend" aria-label="Task color key"></div>
     </section>
 
     <section class="shop panel" aria-label="Café upgrades">
