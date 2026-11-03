@@ -105,7 +105,6 @@ ul#taskList{list-style:none;margin:0;padding:0;display:flex;flex-direction:colum
 .task input:checked+.box::after{content:"✔"}
 .task input:focus-visible+.box{outline:3px dashed var(--accent);outline-offset:2px}
 .task .txt{overflow-wrap:anywhere}
-.task .badge{display:inline-block;width:10px;height:10px;border:2px solid var(--ink);margin-right:6px;vertical-align:middle}
 .task .meta{opacity:.7;font-size:17px;margin-left:6px;white-space:nowrap}
 .task.done .txt{text-decoration:line-through;opacity:.5}
 .task .del{background:none;border:none;font:inherit;font-size:24px;color:var(--ink);cursor:pointer;opacity:.5;padding:0 6px}
@@ -207,7 +206,7 @@ ul#taskList{list-style:none;margin:0;padding:0;display:flex;flex-direction:colum
         <span id="leftTxt"></span>
         <button class="btn ghost small" id="clearBtn">Clear done</button>
       </div>
-      <div class="legend" id="legend" aria-label="Task color key"></div>
+      <div class="legend" id="legend" aria-label="Color key for ingredients and dishes"></div>
     </section>
 
     <section class="shop panel" aria-label="Café upgrades">
@@ -1005,8 +1004,7 @@ function renderTasks(){
     cb.onchange=()=>toggleTask(t.id,cb.checked);
     const box=document.createElement('span');box.className='box';
     const tx=document.createElement('span');tx.className='txt';
-    const bd=document.createElement('i');bd.className='badge';bd.style.background=CATS[t.cat].color;bd.title=CATS[t.cat].label;
-    tx.append(bd,document.createTextNode(t.text));
+    tx.append(document.createTextNode(t.text));
     const meta=(t.big?'★ ':'')+(t.repeat?'↻ '+t.repeat:'');
     if(meta){const m=document.createElement('span');m.className='meta';m.textContent=meta;tx.append(m);}
     lab.append(cb,box,tx);
